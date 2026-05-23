@@ -1,0 +1,7 @@
+**/.git
+node_modules
+dist
+package.json
+yarn.lock
+**/*.gen.ts
+.husky
