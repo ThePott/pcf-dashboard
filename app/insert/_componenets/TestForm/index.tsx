@@ -1,35 +1,20 @@
 "use client"
 
-import prismaClient from "@/app/shared/configs/prisma-client"
+import { testCreateActionRecord } from "./actions"
 
 const TestForm = () => {
-    const handleSubmit = async () => {
-        const productName = "왕제품"
-        const productResult = await prismaClient.product.upsert({
-            where: { name: productName },
-            update: {},
-            create: {
-                name: productName,
-            },
-        })
+    const handleSubmit = async (event: React.SubmitEvent) => {
+        event.preventDefault()
 
-        const recordResult = await prismaClient.activity_record.create({
-            data: {
-                acted_at: new Date(),
-                amount: 10,
-                record_status: "PROVISIONAL",
-                scope: "SCOPE_1",
-                emission_factor_id: 1,
-                activity_description_id: 1,
-                product_id: productResult.id,
-                unit: "kWh",
-            },
-        })
+        const recordResult = await testCreateActionRecord()
+
+        console.log({ recordResult })
     }
+
     return (
         <div>
             <p>this is test form</p>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <input />
                 <button>submit</button>
             </form>
