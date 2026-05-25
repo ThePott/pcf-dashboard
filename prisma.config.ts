@@ -2,7 +2,7 @@
 // npm install --save-dev prisma dotenv
 import "dotenv/config"
 import { defineConfig } from "prisma/config"
-import { DATABASE_URL } from "./app/shared/utils/check-env-var"
+import { DATABASE_URL } from "./app/shared/configs/env-var"
 
 export default defineConfig({
     schema: "prisma/schema.prisma",
