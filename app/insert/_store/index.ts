@@ -1,10 +1,10 @@
 "use client"
 import { create } from "zustand"
-import { PcfInsertionPayloadElement, PcfInsertionRow } from "../_types"
+import { PcfInsertionColumnKey, PcfInsertionRow } from "../_types"
 
 type InsertStoreState = {
     rowArray: PcfInsertionRow[]
-    updateRowArray: (rowIndex: number, columnKey: keyof PcfInsertionPayloadElement, value: string) => void
+    updateRowArray: (rowIndex: number, columnKey: PcfInsertionColumnKey, value: string) => void
 }
 
 const useInsertStore = create<InsertStoreState>()((set, get) => ({
@@ -14,6 +14,7 @@ const useInsertStore = create<InsertStoreState>()((set, get) => ({
             () =>
                 ({
                     acted_at: {},
+                    activity_category_id: {},
                     activity_description_id: {},
                     amount: {},
                     emission_factor_id: {},

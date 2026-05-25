@@ -1,5 +1,4 @@
 "use client"
-import { ghg_scope } from "@/app/generated/prisma/client"
 import { PcfInsertionPayloadElement } from "@/app/insert/_types"
 import { ActivityInsertionPrerequisite } from "@/app/insert/page"
 import { Vstack } from "@/app/shared/components/layouts"
@@ -18,12 +17,6 @@ import InputDropdownStatic from "./InputDropdownStatic"
 
 const columnHelper = createColumnHelper<PcfInsertionPayloadElement>()
 
-const ghgScopeToLabel: Record<ghg_scope, string> = {
-    SCOPE_1: "Scope 1",
-    SCOPE_2: "Scope 2",
-    SCOPE_3: "Scope 3",
-}
-
 const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
     const columns = [
         columnHelper.accessor("acted_at", {
@@ -33,19 +26,12 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
         columnHelper.display({
             id: "activity_category_id",
             header: "활동 유형",
-            cell: () => (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <button>Open</button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuGroup>
-                            {prerequisite.activityCategoryResult.map((category) => (
-                                <DropdownMenuItem key={category.id}>{category.category}</DropdownMenuItem>
-                            ))}
-                        </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+            cell: (info) => (
+                <InputDropdownStatic
+                    columnKey="activity_category_id"
+                    rowIndex={info.row.index}
+                    queryResult={prerequisite.activityCategoryResult}
+                />
             ),
         }),
         columnHelper.accessor("activity_description_id", {
@@ -58,7 +44,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
                     <DropdownMenuContent>
                         <DropdownMenuGroup>
                             {prerequisite.activityDescriptionResult.map((description) => (
-                                <DropdownMenuItem key={description.id}>{description.description}</DropdownMenuItem>
+                                <DropdownMenuItem key={description.id}>{description.label}</DropdownMenuItem>
                             ))}
                         </DropdownMenuGroup>
                     </DropdownMenuContent>

@@ -5,17 +5,18 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuGroup,
+    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { EllipsisVertical } from "lucide-react"
 import { useRef } from "react"
 import InputBase from "../InputBase"
 
-type WithInputDropdownDynamicProps<T> = {
+type WithInputDropdownDynamicProps<T extends { id: BigInt; label: string }> = {
     queryResult: T[]
     filterRule: (element: T) => boolean
 }
-const InputDropdownDynamic = <T,>({
+const InputDropdownDynamic = <T extends { id: BigInt; label: string }>({
     queryResult,
     filterRule,
     columnKey,
@@ -33,11 +34,6 @@ const InputDropdownDynamic = <T,>({
         inputRef.current.value = value
     }
 
-    // {filteredQueryResult.map((element) => (
-    //     <DropdownMenuItem key={element.id} onClick={() => handleClick(value)}>
-    //         {element.value}
-    //     </DropdownMenuItem>
-    // ))}
     return (
         <InputBase
             ref={inputRef}
@@ -50,7 +46,16 @@ const InputDropdownDynamic = <T,>({
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                        <DropdownMenuGroup></DropdownMenuGroup>
+                        <DropdownMenuGroup>
+                            {filteredQueryResult.map((element) => (
+                                <DropdownMenuItem
+                                    key={element.id.toString()}
+                                    onClick={() => handleClick(element.label)}
+                                >
+                                    {element.label}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>
             }

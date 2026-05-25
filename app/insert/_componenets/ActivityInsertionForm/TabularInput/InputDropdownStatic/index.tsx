@@ -1,6 +1,7 @@
+import { activity_category } from "@/app/generated/prisma/client"
 import { activity_unit, ghg_scope } from "@/app/generated/prisma/enums"
 import useInsertStore from "@/app/insert/_store"
-import { PcfInputCoordinate, PcfInsertionPayloadElement } from "@/app/insert/_types"
+import { PcfInputCoordinate, PcfInsertionColumnKey } from "@/app/insert/_types"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -25,20 +26,28 @@ const activityUnitToLabel: Record<activity_unit, string> = {
     ton_km: "ton-km",
 }
 
-const makeEntries = (forWhat: keyof PcfInsertionPayloadElement) => {
+const makeEntries = (forWhat: PcfInsertionColumnKey, queryResult: activity_category[] | undefined) => {
     switch (forWhat) {
         case "unit":
             return Object.entries(activityUnitToLabel)
         case "scope":
             return Object.entries(ghgScopeToLabel)
+        case "activity_category_id":
+            if (!queryResult) throw new Error("---- MUST PROVIDE QUERY RESULT")
+            const entries = queryResult.map((element) => [element.id.toString(), element.label])
+            return entries
         default:
-            throw new Error("")
+            throw new Error("---- NOT SUPPORTED")
     }
 }
 
-const InputDropdownStatic = ({ columnKey, rowIndex }: PcfInputCoordinate) => {
+type WithInputDropdownStaticProps = {
+    queryResult?: activity_category[]
+}
+const InputDropdownStatic = ({ queryResult, ...props }: PcfInputCoordinate & WithInputDropdownStaticProps) => {
+    const { columnKey, rowIndex } = props
     const updateRowArray = useInsertStore((state) => state.updateRowArray)
-    const entries = makeEntries(columnKey)
+    const entries = makeEntries(columnKey, queryResult)
 
     const inputRef = useRef<HTMLInputElement>(null)
 
