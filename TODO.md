@@ -16,6 +16,8 @@
 
 - [x] 의존성 설치(tv, tanstack virtual, tanstack table, axios, zod, chart.js)
 - [x] table 띄우기
+- [ ] hstack 추가
+- [ ] cellInput 제작
 - [ ] calendar inputcell 만들기
 - [ ] select inputcell 만들기
 - [ ] autocomplete inputcell 만들기
