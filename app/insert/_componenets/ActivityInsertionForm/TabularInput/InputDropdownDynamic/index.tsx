@@ -12,11 +12,11 @@ import { EllipsisVertical } from "lucide-react"
 import { useRef } from "react"
 import InputBase from "../InputBase"
 
-type WithInputDropdownDynamicProps<T extends { id: BigInt; label: string }> = {
+type WithInputDropdownDynamicProps<T extends { id: bigint; label: string }> = {
     queryResult: T[]
     filterRule: (element: T) => boolean
 }
-const InputDropdownDynamic = <T extends { id: BigInt; label: string }>({
+const InputDropdownDynamic = <T extends { id: bigint; label: string }>({
     queryResult,
     filterRule,
     columnKey,
