@@ -15,14 +15,14 @@ datasource db {
 // 운송, 원자재, 전기
 // 각 카테고리 내에서의 자동완성 목적
 model activity_category {
-  id                   BigInt                 @id
+  id                   BigInt                 @id @default(autoincrement())
   category             String                 @map("name") @db.VarChar(255)
   activityDescriptions activity_description[]
 }
 
 // 플라스틱1, 플라스틱2 등
 model activity_description {
-  id                   BigInt            @id
+  id                   BigInt            @id @default(autoincrement())
   description          String            @map("name") @db.VarChar(255)
   activity_category_id BigInt
   activity_category    activity_category @relation(fields: [activity_category_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -36,7 +36,7 @@ enum activity_unit {
 }
 
 model emission_factor {
-  id                      BigInt               @id
+  id                      BigInt               @id @default(autoincrement())
   version                 DateTime             @db.Timestamp(6) // NOTE: 고시 연월일
   company_id              BigInt? // NOTE: 회사 자체 계수일 경우 입력(현재 기능 구현 안 됨)
   value                   Float
@@ -58,7 +58,7 @@ enum record_status {
 }
 
 model activity_record {
-  id                      BigInt        @id
+  id                      BigInt        @id @default(autoincrement())
   acted_at                DateTime      @db.Timestamp(6)
   activity_description_id BigInt
   amount                  Float
