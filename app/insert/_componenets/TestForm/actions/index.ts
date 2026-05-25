@@ -5,7 +5,7 @@ import prismaClient from "@/app/shared/configs/prisma-client"
 export const testCreateActionRecord = async () =>
     await prismaClient.$transaction(async (tx) => {
         const productName = "왕제품"
-        const productResult = await prismaClient.product.upsert({
+        const productResult = await tx.product.upsert({
             where: { name: productName },
             update: {},
             create: {
@@ -13,7 +13,7 @@ export const testCreateActionRecord = async () =>
             },
         })
 
-        const recordResult = await prismaClient.activity_record.create({
+        const recordResult = await tx.activity_record.create({
             data: {
                 acted_at: new Date(),
                 amount: 10,
