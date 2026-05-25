@@ -1,7 +1,9 @@
 "use client"
-import { activity_record } from "@/app/generated/prisma/client"
+import { ghg_scope } from "@/app/generated/prisma/client"
+import { PcfInsertionPayloadElement } from "@/app/insert/_types"
 import { ActivityInsertionPrerequisite } from "@/app/insert/page"
 import { Vstack } from "@/app/shared/components/layouts"
+import { Calendar } from "@/components/ui/calendar"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,35 +16,74 @@ import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "
 import clsx from "clsx"
 import { useState } from "react"
 
-type TabularInputRow = Omit<
-    activity_record,
-    "product_id" | "company_id" | "created_at" | "updated_at" | "record_status" | "id"
->
-const columnHelper = createColumnHelper<TabularInputRow>()
+const columnHelper = createColumnHelper<PcfInsertionPayloadElement>()
+
+const ghgScopeToLabel: Record<ghg_scope, string> = {
+    SCOPE_1: "Scope 1",
+    SCOPE_2: "Scope 2",
+    SCOPE_3: "Scope 3",
+}
 
 const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
     const columns = [
         columnHelper.accessor("acted_at", {
             header: "일자(원본)",
-            cell: (info) => <input value={info.getValue()?.toISOString().slice(0, 10)} />,
+            cell: (info) => (
+                <Vstack>
+                    <input value={info.getValue()?.toISOString().slice(0, 10)} />
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button>Open</button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem asChild>
+                                    <Calendar mode="single" onSelect={() => {}} className="rounded-lg border" />
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </Vstack>
+            ),
         }),
         columnHelper.display({
             id: "activity_category_id",
             header: "활동 유형",
-            cell: () => {
-                return <input />
-            },
+            cell: () => (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button>Open</button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuGroup>
+                            {prerequisite.activityCategoryResult.map((category) => (
+                                <DropdownMenuItem key={category.id}>{category.category}</DropdownMenuItem>
+                            ))}
+                        </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ),
         }),
         columnHelper.accessor("activity_description_id", {
             header: "설명",
-            cell: () => <input />,
+            cell: () => (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button>Open</button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuGroup>
+                            {prerequisite.activityDescriptionResult.map((description) => (
+                                <DropdownMenuItem key={description.id}>{description.description}</DropdownMenuItem>
+                            ))}
+                        </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ),
         }),
         columnHelper.accessor("scope", {
             header: "GHG Scope",
-            cell: () => <input />,
-        }),
-        columnHelper.accessor("amount", {
-            header: "량",
             cell: () => (
                 <Vstack>
                     <input />
@@ -52,14 +93,18 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             <DropdownMenuGroup>
-                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                <DropdownMenuItem>Profile</DropdownMenuItem>
-                                <DropdownMenuItem>Billing</DropdownMenuItem>
+                                {Object.entries(ghgScopeToLabel).map(([ghgScope, label]) => (
+                                    <DropdownMenuItem key={ghgScope}>{label}</DropdownMenuItem>
+                                ))}
                             </DropdownMenuGroup>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </Vstack>
             ),
+        }),
+        columnHelper.accessor("amount", {
+            header: "량",
+            cell: () => <input />,
         }),
         columnHelper.accessor("unit", {
             header: "단위",
@@ -107,7 +152,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
 
 const rowArray = Array(100)
     .fill(null)
-    .map(() => ({}) as TabularInputRow)
+    .map(() => ({}) as PcfInsertionPayloadElement)
 
 const TabularInput = (props: ActivityInsertionPrerequisite) => {
     const [columns, _setColumns] = useState(() => createColumns(props))
@@ -120,10 +165,10 @@ const TabularInput = (props: ActivityInsertionPrerequisite) => {
     return (
         <Vstack>
             <p>this is tabular input</p>
-            <table className="relative w-full">
-                <thead className="bg-bg-neg-1 sticky top-0 z-10">
+            <table>
+                <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id} className="flex">
+                        <tr key={headerGroup.id}>
                             {headerGroup.headers.map((header) => (
                                 <th
                                     key={header.id}
@@ -141,7 +186,7 @@ const TabularInput = (props: ActivityInsertionPrerequisite) => {
                 </thead>
                 <tbody>
                     {table.getRowModel().rows.map((row) => (
-                        <tr key={row.id} className="absolute left-0 flex w-full">
+                        <tr key={row.id}>
                             {row.getVisibleCells().map((cell) => {
                                 return (
                                     <td

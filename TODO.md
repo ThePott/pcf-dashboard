@@ -15,7 +15,7 @@
 # insert mvp
 
 - [x] 의존성 설치(tv, tanstack virtual, tanstack table, axios, zod, chart.js)
-- [ ] table 띄우기
+- [x] table 띄우기
 - [ ] submit 하기
 - [ ] validation
 - [ ] cell에 dropdown 넣기
