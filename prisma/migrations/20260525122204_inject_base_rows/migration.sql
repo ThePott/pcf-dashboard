@@ -11,7 +11,7 @@ INSERT INTO activity_category (id, label) VALUES
 
 -- activity_description
 INSERT INTO activity_description (id, label, activity_category_id) VALUES
-(1, '한국전력 기본값', 1),
+(1, '한국전력', 1),
 (2, '플라스틱 1', 2),
 (3, '플라스틱 2', 2),
 (4, '트럭', 3);
