@@ -4,13 +4,13 @@
 */ 
 
 -- activity_category: 전기, 원소재, 운송
-INSERT INTO activity_category (id, name) VALUES
+INSERT INTO activity_category (id, label) VALUES
 (1, '전기'),
 (2, '원소재'),
 (3, '운송');
 
 -- activity_description
-INSERT INTO activity_description (id, name, activity_category_id) VALUES
+INSERT INTO activity_description (id, label, activity_category_id) VALUES
 (1, '한국전력 기본값', 1),
 (2, '플라스틱 1', 2),
 (3, '플라스틱 2', 2),
