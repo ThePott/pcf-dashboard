@@ -4,11 +4,13 @@ services:
         ports:
             - "3000:3000"
         environment:
-            DATABASE_URL: postgresql://postgres:password@db:5432/almond
+            DATABASE_URL: postgresql://postgres:password@db:5432/pcf-deploy
         depends_on:
             - db
     db:
         image: postgres:18
+        ports:
+            - "5432:5432"
         environment:
             POSTGRES_PASSWORD: password
-            POSTGRES_DB: almond
+            POSTGRES_DB: pcf-deploy
