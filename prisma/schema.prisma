@@ -32,12 +32,13 @@ model activity_description {
 enum activity_unit {
   kWh
   kg
-  ton_km // ton-km은 enum에서 하이픈 불가
+  ton_km // NOTE: ton-km은 enum에서 하이픈 불가
 }
 
 model emission_factor {
   id                      BigInt               @id
-  version                 DateTime             @db.Timestamp(6)
+  version                 DateTime             @db.Timestamp(6) // NOTE: 고시 연월일
+  company_id              BigInt? // NOTE: 회사 자체 계수일 경우 입력(현재 기능 구현 안 됨)
   value                   Float
   activity_unit           activity_unit // NOTE: 배출 계수 단위:  kgCO₂e / activity_unit
   activity_description_id BigInt
