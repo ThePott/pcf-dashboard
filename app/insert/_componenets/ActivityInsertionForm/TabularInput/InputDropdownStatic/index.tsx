@@ -54,10 +54,10 @@ const InputDropdownStatic = <T extends Base>({
 
     const inputRef = useRef<HTMLInputElement>(null)
 
-    const handleClick = (value: string) => {
-        updateRowArray(rowIndex, columnKey, value)
+    const handleUpdate = (id: string, label: string) => {
+        updateRowArray(rowIndex, columnKey, id.toString(), label)
         if (!inputRef?.current) return
-        inputRef.current.value = value
+        inputRef.current.value = label
     }
 
     return (
@@ -74,7 +74,7 @@ const InputDropdownStatic = <T extends Base>({
                     <DropdownMenuContent>
                         <DropdownMenuGroup>
                             {entries.map(([key, value]) => (
-                                <DropdownMenuItem key={key} onClick={() => handleClick(value)}>
+                                <DropdownMenuItem key={key} onClick={() => handleUpdate(key, value)}>
                                     {value}
                                 </DropdownMenuItem>
                             ))}

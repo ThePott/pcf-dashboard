@@ -17,22 +17,28 @@ const InputCalendar = ({ columnKey, rowIndex }: PcfInputCoordinate) => {
     const dateCell = rowArray[rowIndex]?.[columnKey]
     const date = dateCell ? new Date(dateCell.value) : undefined
 
-    const handleSelect = (selected: Date | undefined) => {
+    const handleSelect = (selected: Date | string | undefined) => {
         if (!selected) return
-        const ymd = makeKstYmd(selected)
-        updateRowArray(rowIndex, columnKey, ymd)
+        if (typeof selected === "string") {
+            // TODO: onBlur validate 해야
+            updateRowArray(rowIndex, columnKey, selected, selected)
+            if (!inputRef?.current) return
+            inputRef.current.value = selected
+            return
+        }
 
+        // TODO: need to reduce repetition
+        const ymd = makeKstYmd(selected)
+        updateRowArray(rowIndex, columnKey, ymd, ymd)
         if (!inputRef?.current) return
         inputRef.current.value = ymd
     }
-
-    // TODO: onBlur validate 해야
 
     return (
         <InputBase
             ref={inputRef}
             isError={false}
-            onBlur={(event) => updateRowArray(rowIndex, columnKey, event.target.value)}
+            onBlur={(event) => handleSelect(event.target.value)}
             TrailingComponent={
                 <Popover>
                     <PopoverTrigger asChild>

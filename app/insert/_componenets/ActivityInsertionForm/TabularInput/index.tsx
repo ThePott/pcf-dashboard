@@ -1,5 +1,5 @@
 "use client"
-import { PcfInsertionPayloadElement } from "@/app/insert/_types"
+import { PcfInsertionRow } from "@/app/insert/_types"
 import { ActivityInsertionPrerequisite } from "@/app/insert/page"
 import { Vstack } from "@/app/shared/components/layouts"
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
@@ -9,7 +9,7 @@ import InputBase from "./InputBase"
 import InputCalendar from "./InputCalendar"
 import InputDropdownStatic from "./InputDropdownStatic"
 
-const columnHelper = createColumnHelper<PcfInsertionPayloadElement>()
+const columnHelper = createColumnHelper<PcfInsertionRow>()
 
 const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
     const columns = [
@@ -34,10 +34,13 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
                 <InputDropdownStatic
                     columnKey="activity_description_id"
                     rowIndex={info.row.index}
-                    queryResult={prerequisite.activityDescriptionResult.filter(
-                        (activityDescription) =>
-                            activityDescription.activity_category_id === info.row.original.activity_description_id
-                    )}
+                    queryResult={prerequisite.activityDescriptionResult.filter((activityDescription) => {
+                        const selectedCategoryId = info.row.original.activity_category_id?.value
+                        if (!selectedCategoryId) return true
+
+                        const currentCategoryId = activityDescription.activity_category_id.toString()
+                        return selectedCategoryId === currentCategoryId
+                    })}
                 />
             ),
         }),
@@ -63,7 +66,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
 
 const rowArray = Array(100)
     .fill(null)
-    .map(() => ({}) as PcfInsertionPayloadElement)
+    .map(() => ({}) as PcfInsertionRow)
 
 const TabularInput = (props: ActivityInsertionPrerequisite) => {
     const [columns, _setColumns] = useState(() => createColumns(props))

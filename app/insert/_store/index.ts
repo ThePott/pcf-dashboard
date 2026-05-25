@@ -4,7 +4,7 @@ import { PcfInsertionColumnKey, PcfInsertionRow } from "../_types"
 
 type InsertStoreState = {
     rowArray: PcfInsertionRow[]
-    updateRowArray: (rowIndex: number, columnKey: PcfInsertionColumnKey, value: string) => void
+    updateRowArray: (rowIndex: number, columnKey: PcfInsertionColumnKey, value: string, label: string) => void
 }
 
 const useInsertStore = create<InsertStoreState>()((set, get) => ({
@@ -22,7 +22,7 @@ const useInsertStore = create<InsertStoreState>()((set, get) => ({
                     unit: {},
                 }) as PcfInsertionRow
         ),
-    updateRowArray: (rowIndex, columnKey, value) => {
+    updateRowArray: (rowIndex, columnKey, value, label) => {
         const rowArray = [...get().rowArray]
         const row = rowArray[rowIndex]
         const cell = row?.[columnKey]
@@ -32,6 +32,7 @@ const useInsertStore = create<InsertStoreState>()((set, get) => ({
         if (!value && !cell.value) return
 
         cell.value = value
+        cell.label = label
         cell.isError = false
 
         set({ rowArray })
