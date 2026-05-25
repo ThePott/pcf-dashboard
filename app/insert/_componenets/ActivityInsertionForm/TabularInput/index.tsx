@@ -2,16 +2,10 @@
 import { PcfInsertionPayloadElement } from "@/app/insert/_types"
 import { ActivityInsertionPrerequisite } from "@/app/insert/page"
 import { Vstack } from "@/app/shared/components/layouts"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import clsx from "clsx"
 import { useState } from "react"
+import InputBase from "./InputBase"
 import InputCalendar from "./InputCalendar"
 import InputDropdownStatic from "./InputDropdownStatic"
 
@@ -36,19 +30,15 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
         }),
         columnHelper.accessor("activity_description_id", {
             header: "설명",
-            cell: () => (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <button>Open</button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuGroup>
-                            {prerequisite.activityDescriptionResult.map((description) => (
-                                <DropdownMenuItem key={description.id}>{description.label}</DropdownMenuItem>
-                            ))}
-                        </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+            cell: (info) => (
+                <InputDropdownStatic
+                    columnKey="activity_description_id"
+                    rowIndex={info.row.index}
+                    queryResult={prerequisite.activityDescriptionResult.filter(
+                        (activityDescription) =>
+                            activityDescription.activity_category_id === info.row.original.activity_description_id
+                    )}
+                />
             ),
         }),
         columnHelper.accessor("scope", {
@@ -57,7 +47,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
         }),
         columnHelper.accessor("amount", {
             header: "량",
-            cell: () => <input />,
+            cell: () => <InputBase type="number" isError={false} />,
         }),
         columnHelper.accessor("unit", {
             header: "단위",
@@ -65,23 +55,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
         }),
         columnHelper.accessor("emission_factor_id", {
             header: "배출 계수",
-            cell: () => (
-                <Vstack>
-                    <input />
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <button>Open</button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuGroup>
-                                {prerequisite.emissionFactorResult.map((emissionFactor) => (
-                                    <DropdownMenuItem key={emissionFactor.id}>{emissionFactor.id}</DropdownMenuItem>
-                                ))}
-                            </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </Vstack>
-            ),
+            cell: () => <InputBase type="number" isError={false} />,
         }),
     ]
     return columns

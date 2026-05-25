@@ -32,19 +32,22 @@ const makeEntries = (forWhat: PcfInsertionColumnKey, queryResult: activity_categ
             return Object.entries(activityUnitToLabel)
         case "scope":
             return Object.entries(ghgScopeToLabel)
-        case "activity_category_id":
+        default: {
             if (!queryResult) throw new Error("---- MUST PROVIDE QUERY RESULT")
             const entries = queryResult.map((element) => [element.id.toString(), element.label])
             return entries
-        default:
-            throw new Error("---- NOT SUPPORTED")
+        }
     }
 }
 
-type WithInputDropdownStaticProps = {
-    queryResult?: activity_category[]
+type Base = { id: bigint; label: string }
+type WithInputDropdownStaticProps<T extends Base> = {
+    queryResult?: T[]
 }
-const InputDropdownStatic = ({ queryResult, ...props }: PcfInputCoordinate & WithInputDropdownStaticProps) => {
+const InputDropdownStatic = <T extends Base>({
+    queryResult,
+    ...props
+}: PcfInputCoordinate & WithInputDropdownStaticProps<T>) => {
     const { columnKey, rowIndex } = props
     const updateRowArray = useInsertStore((state) => state.updateRowArray)
     const entries = makeEntries(columnKey, queryResult)
