@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { EllipsisVertical } from "lucide-react"
 import { useRef } from "react"
+import { UpdateDataFunction } from ".."
 import InputBase from "../InputBase"
 
 const ghgScopeToLabel: Record<ghg_scope, string> = {
@@ -43,6 +44,7 @@ const makeEntries = (forWhat: PcfInsertionColumnKey, queryResult: activity_categ
 type Base = { id: bigint; label: string }
 type WithInputDropdownStaticProps<T extends Base> = {
     queryResult?: T[]
+    updateData: UpdateDataFunction | undefined
 }
 const InputDropdownStatic = <T extends Base>({
     queryResult,

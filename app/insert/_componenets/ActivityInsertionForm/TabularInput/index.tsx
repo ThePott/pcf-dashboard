@@ -1,5 +1,5 @@
 "use client"
-import { PcfInsertionRow } from "@/app/insert/_types"
+import { PcfInsertionColumnKey, PcfInsertionRow } from "@/app/insert/_types"
 import { ActivityInsertionPrerequisite } from "@/app/insert/page"
 import { Vstack } from "@/app/shared/components/layouts"
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
@@ -25,6 +25,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
                     columnKey="activity_category_id"
                     rowIndex={info.row.index}
                     queryResult={prerequisite.activityCategoryResult}
+                    updateData={info.table.options.meta?.updateData}
                 />
             ),
         }),
@@ -41,12 +42,19 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
                         const currentCategoryId = activityDescription.activity_category_id.toString()
                         return selectedCategoryId === currentCategoryId
                     })}
+                    updateData={info.table.options.meta?.updateData}
                 />
             ),
         }),
         columnHelper.accessor("scope", {
             header: "GHG Scope",
-            cell: (info) => <InputDropdownStatic columnKey="scope" rowIndex={info.row.index} />,
+            cell: (info) => (
+                <InputDropdownStatic
+                    columnKey="scope"
+                    rowIndex={info.row.index}
+                    updateData={info.table.options.meta?.updateData}
+                />
+            ),
         }),
         columnHelper.accessor("amount", {
             header: "량",
@@ -54,7 +62,13 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
         }),
         columnHelper.accessor("unit", {
             header: "단위",
-            cell: (info) => <InputDropdownStatic columnKey="unit" rowIndex={info.row.index} />,
+            cell: (info) => (
+                <InputDropdownStatic
+                    columnKey="unit"
+                    rowIndex={info.row.index}
+                    updateData={info.table.options.meta?.updateData}
+                />
+            ),
         }),
         columnHelper.accessor("emission_factor_id", {
             header: "배출 계수",
@@ -68,12 +82,40 @@ const rowArray = Array(100)
     .fill(null)
     .map(() => ({}) as PcfInsertionRow)
 
+export type UpdateDataFunction = (
+    rowIndex: number,
+    columnKey: PcfInsertionColumnKey,
+    value: string,
+    label: string
+) => void
+
 const TabularInput = (props: ActivityInsertionPrerequisite) => {
     const [columns, _setColumns] = useState(() => createColumns(props))
+    const [data, setData] = useState(rowArray)
+
+    const updateData: UpdateDataFunction = (rowIndex, columnKey, value, label) => {
+        const rowArray = [...data]
+        const row = rowArray[rowIndex]
+        const cell = row?.[columnKey]
+        if (!cell) return
+
+        // NOTE: 빈 셀 클릭했으면 아무것도 안 함
+        if (!value && !cell.value) return
+
+        cell.value = value
+        cell.label = label
+        cell.isError = false
+
+        setData(rowArray)
+    }
+
     const table = useReactTable({
         columns,
         data: rowArray,
         getCoreRowModel: getCoreRowModel(),
+        meta: {
+            updateData,
+        },
     })
 
     return (
