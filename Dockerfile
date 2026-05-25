@@ -47,6 +47,10 @@ COPY . .
 
 ENV NODE_ENV=production
 
+# Build-time env vars (passed via docker-compose build.args from host environment).
+ARG DATABASE_URL=postgresql://postgres:password@db:5432/pcf-deploy
+ENV DATABASE_URL=$DATABASE_URL
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
@@ -111,23 +115,3 @@ EXPOSE 3000
 
 # Start Next.js standalone server
 CMD ["node", "server.js"]
-
-
-# # I have tried this, but image size is over 4 gb
-# # Build Stage
-# FROM node:24-alpine AS builder
-# WORKDIR /project
-# COPY package*.json ./
-# RUN yarn install
-# COPY . .
-# RUN yarn build
-#
-# # Production Stage
-# FROM node:24-alpine AS production
-# WORKDIR /project
-# COPY --from=builder /project/.next ./.next
-# COPY --from=builder /project/public ./public
-# COPY --from=builder /project/package.json ./
-# COPY --from=builder /project/yarn.lock ./
-# RUN yarn install --production
-# CMD ["yarn", "start"]
