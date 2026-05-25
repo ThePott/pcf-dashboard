@@ -12,3 +12,8 @@ export type PcfInsertionCell = {
 }
 
 export type PcfInsertionRow = Record<keyof PcfInsertionPayloadElement, PcfInsertionCell>
+
+export type PcfInputCoordinate = {
+    columnKey: keyof PcfInsertionPayloadElement
+    rowIndex: number
+}

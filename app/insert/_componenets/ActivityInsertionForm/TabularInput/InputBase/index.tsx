@@ -4,7 +4,7 @@ import { JSX } from "react"
 import { tv } from "tailwind-variants/lite"
 
 const inputBaseVariants = tv({
-    base: "rounded-my-sm my-transition items-center outline",
+    base: "rounded-my-sm my-transition items-center outline px-3 py-2 size-full",
     variants: {
         isError: {
             false: "focus-within:outline-border-muted outline-transparent bg-dark-red",
@@ -20,7 +20,7 @@ type InputBaseProps = {
 const InputBase = ({ isError, TrailingComponent }: InputBaseProps) => {
     return (
         <Hstack className={clsx(inputBaseVariants({ isError }))}>
-            <input className="w-full min-w-0 border-0 px-3 py-2 outline-0 placeholder:text-iua-fg-muted disabled:text-iua-fg-dim disabled:placeholder:text-iua-fg-dim" />
+            <input className="size-full min-w-0 border-0 outline-0 placeholder:text-iua-fg-muted disabled:text-iua-fg-dim disabled:placeholder:text-iua-fg-dim" />
             {TrailingComponent}
         </Hstack>
     )

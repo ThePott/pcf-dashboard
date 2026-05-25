@@ -3,7 +3,6 @@ import { ghg_scope } from "@/app/generated/prisma/client"
 import { PcfInsertionPayloadElement } from "@/app/insert/_types"
 import { ActivityInsertionPrerequisite } from "@/app/insert/page"
 import { Vstack } from "@/app/shared/components/layouts"
-import { Calendar } from "@/components/ui/calendar"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -15,6 +14,7 @@ import {
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import clsx from "clsx"
 import { useState } from "react"
+import InputCalendar from "./InputCalendar"
 
 const columnHelper = createColumnHelper<PcfInsertionPayloadElement>()
 
@@ -28,24 +28,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
     const columns = [
         columnHelper.accessor("acted_at", {
             header: "일자(원본)",
-            cell: (info) => (
-                <Vstack>
-                    <input value={info.getValue()?.toISOString().slice(0, 10)} />
-
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <button>Open</button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem asChild>
-                                    <Calendar mode="single" onSelect={() => {}} className="rounded-lg border" />
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </Vstack>
-            ),
+            cell: () => <InputCalendar />,
         }),
         columnHelper.display({
             id: "activity_category_id",
