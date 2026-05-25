@@ -6,4 +6,4 @@ const checkEnvVar = (envVar: string | undefined) => {
     return envVar
 }
 
-export const DATABASE_URL = checkEnvVar("DATABASE_URL")
+export const DATABASE_URL = checkEnvVar(process.env.DATABASE_URL)
