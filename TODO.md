@@ -10,8 +10,28 @@
 - [x] db에 더미 직접 입력
 - [x] 쿼리 되는지 확인
 - [x] 화면에 출력(read) emission factor
-- [ ] client가 요청 보내면 db에서 더미 데이터 입력(제품명만 반영)
+- [x] client가 요청 보내면 db에서 더미 데이터 입력(제품명만 반영)
 
-# 클라이언트 세팅
+# insert mvp
 
-- [ ] 의존성 설치(tv, tanstack virtual, tanstack table, axios, zod, chart.js)
+- [x] 의존성 설치(tv, tanstack virtual, tanstack table, axios, zod, chart.js)
+- [ ] table 띄우기
+- [ ] submit 하기
+- [ ] validation
+- [ ] cell에 dropdown 넣기
+
+#
+
+# 대시보드
+
+- [ ] scope 보여주기
+
+# 꾸미기
+
+# 최적화
+
+- [ ] table virtualization
+
+# 추가 기능
+
+- [ ] 자동 완성

@@ -1,8 +1,9 @@
 "use client"
 
 import { testCreateActionRecord } from "./actions"
+import TabularInput from "./TabularInput"
 
-const TestForm = () => {
+const TableForm = () => {
     const handleSubmit = async (event: React.SubmitEvent) => {
         event.preventDefault()
 
@@ -17,9 +18,10 @@ const TestForm = () => {
             <form onSubmit={handleSubmit}>
                 <input />
                 <button>submit</button>
+                <TabularInput />
             </form>
         </div>
     )
 }
 
-export default TestForm
+export default TableForm

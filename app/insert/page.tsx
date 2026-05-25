@@ -1,6 +1,6 @@
 import prismaClient from "../shared/configs/prisma-client"
 import { makeSerializable } from "../shared/utils/make-serializable"
-import TestForm from "./_componenets/TestForm"
+import TableForm from "./_componenets/TableForm"
 
 const InsertPage = async () => {
     const result = await prismaClient.emission_factor.findMany()
@@ -10,7 +10,7 @@ const InsertPage = async () => {
     return (
         <div>
             <div>this is insert page</div>
-            <TestForm />
+            <TableForm />
         </div>
     )
 }

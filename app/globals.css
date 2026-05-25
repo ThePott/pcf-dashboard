@@ -10,6 +10,12 @@
     --color-foreground: var(--foreground);
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
+
+    --spacing-my-xs: 4px;
+    --spacing-my-sm: 8px;
+    --spacing-my-md: 12px;
+    --spacing-my-lg: 24px;
+    --spacing-my-xl: 48px;
 }
 
 @media (prefers-color-scheme: dark) {
