@@ -1,9 +1,10 @@
 "use client"
 
+import { ActivityInsertionPrerequisite } from "../../page"
 import { testCreateActionRecord } from "./actions"
 import TabularInput from "./TabularInput"
 
-const TableForm = () => {
+const ActivityInsertionForm = (props: ActivityInsertionPrerequisite) => {
     const handleSubmit = async (event: React.SubmitEvent) => {
         event.preventDefault()
 
@@ -18,10 +19,10 @@ const TableForm = () => {
             <form onSubmit={handleSubmit}>
                 <input />
                 <button>submit</button>
-                <TabularInput />
+                <TabularInput {...props} />
             </form>
         </div>
     )
 }
 
-export default TableForm
+export default ActivityInsertionForm
