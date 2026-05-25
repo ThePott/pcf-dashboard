@@ -13,8 +13,8 @@ import {
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import clsx from "clsx"
 import { useState } from "react"
-import DropdownStatic from "./DropdownStatic"
 import InputCalendar from "./InputCalendar"
+import InputDropdownStatic from "./InputDropdownStatic"
 
 const columnHelper = createColumnHelper<PcfInsertionPayloadElement>()
 
@@ -67,7 +67,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
         }),
         columnHelper.accessor("scope", {
             header: "GHG Scope",
-            cell: (info) => <DropdownStatic columnKey="scope" rowIndex={info.row.index} />,
+            cell: (info) => <InputDropdownStatic columnKey="scope" rowIndex={info.row.index} />,
         }),
         columnHelper.accessor("amount", {
             header: "량",
@@ -75,7 +75,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
         }),
         columnHelper.accessor("unit", {
             header: "단위",
-            cell: (info) => <DropdownStatic columnKey="unit" rowIndex={info.row.index} />,
+            cell: (info) => <InputDropdownStatic columnKey="unit" rowIndex={info.row.index} />,
         }),
         columnHelper.accessor("emission_factor_id", {
             header: "배출 계수",
