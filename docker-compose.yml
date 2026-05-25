@@ -9,7 +9,19 @@ services:
         environment:
             DATABASE_URL: postgresql://postgres:password@db:5432/pcf-deploy
         depends_on:
-            - db
+            db:
+                condition: service_healthy
+            migrator:
+                condition: service_completed_successfully
+    migrator:
+        build:
+            context: .
+            target: migrator
+        environment:
+            DATABASE_URL: postgresql://postgres:password@db:5432/pcf-deploy
+        depends_on:
+            db:
+                condition: service_healthy
     db:
         image: postgres:18
         ports:
@@ -17,3 +29,8 @@ services:
         environment:
             POSTGRES_PASSWORD: password
             POSTGRES_DB: pcf-deploy
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            interval: 2s
+            timeout: 5s
+            retries: 15

@@ -63,17 +63,35 @@ ENV DATABASE_URL=$DATABASE_URL
 # .next/cache/fetch-cache from being included in the final image, meaning
 # cached fetch responses from the build won't be available at runtime.
 RUN if [ -f package-lock.json ]; then \
-    npm run build; \
+    npx prisma generate && npm run build; \
   elif [ -f yarn.lock ]; then \
-    corepack enable yarn && yarn build; \
+    corepack enable yarn && yarn prisma generate && yarn build; \
   elif [ -f pnpm-lock.yaml ]; then \
-    corepack enable pnpm && pnpm build; \
+    corepack enable pnpm && pnpm exec prisma generate && pnpm build; \
   else \
     echo "No lockfile found." && exit 1; \
   fi
 
 # ============================================
-# Stage 3: Run Next.js application
+# Stage 3: Migrator (runs `prisma migrate deploy` once on compose up)
+# ============================================
+
+FROM node:${NODE_VERSION} AS migrator
+
+WORKDIR /app
+
+# Reuse installed deps (devDependencies included, so the prisma CLI is available)
+COPY --from=dependencies /app/node_modules ./node_modules
+
+# Copy only what `prisma migrate deploy` needs
+COPY package.json yarn.lock* tsconfig.json prisma.config.ts ./
+COPY prisma ./prisma
+COPY app/shared/configs ./app/shared/configs
+
+CMD ["yarn", "prisma", "migrate", "deploy"]
+
+# ============================================
+# Stage 4: Run Next.js application
 # ============================================
 
 FROM node:${NODE_VERSION} AS runner
