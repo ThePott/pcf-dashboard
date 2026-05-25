@@ -8,12 +8,12 @@ import {
     DropdownMenuContent,
     DropdownMenuGroup,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import clsx from "clsx"
 import { useState } from "react"
+import DropdownStatic from "./DropdownStatic"
 import InputCalendar from "./InputCalendar"
 
 const columnHelper = createColumnHelper<PcfInsertionPayloadElement>()
@@ -67,23 +67,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
         }),
         columnHelper.accessor("scope", {
             header: "GHG Scope",
-            cell: () => (
-                <Vstack>
-                    <input />
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <button>Open</button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuGroup>
-                                {Object.entries(ghgScopeToLabel).map(([ghgScope, label]) => (
-                                    <DropdownMenuItem key={ghgScope}>{label}</DropdownMenuItem>
-                                ))}
-                            </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </Vstack>
-            ),
+            cell: (info) => <DropdownStatic columnKey="scope" rowIndex={info.row.index} />,
         }),
         columnHelper.accessor("amount", {
             header: "량",
@@ -91,23 +75,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
         }),
         columnHelper.accessor("unit", {
             header: "단위",
-            cell: () => (
-                <Vstack>
-                    <input />
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <button>Open</button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuGroup>
-                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                <DropdownMenuItem>Profile</DropdownMenuItem>
-                                <DropdownMenuItem>Billing</DropdownMenuItem>
-                            </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </Vstack>
-            ),
+            cell: (info) => <DropdownStatic columnKey="unit" rowIndex={info.row.index} />,
         }),
         columnHelper.accessor("emission_factor_id", {
             header: "배출 계수",

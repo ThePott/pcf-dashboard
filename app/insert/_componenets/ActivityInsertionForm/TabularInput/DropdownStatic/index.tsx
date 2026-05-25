@@ -10,12 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { EllipsisVertical } from "lucide-react"
 
-type ForWhat = Extract<keyof PcfInsertionPayloadElement, "unit" | "scope">
-
-type WithInputSelect = {
-    forWhat: ForWhat
-}
-
 const ghgScopeToLabel: Record<ghg_scope, string> = {
     SCOPE_1: "Scope 1",
     SCOPE_2: "Scope 2",
@@ -28,20 +22,19 @@ const activityUnitToLabel: Record<activity_unit, string> = {
     ton_km: "ton-km",
 }
 
-const makeEntries = (forWhat: ForWhat) => {
+const makeEntries = (forWhat: keyof PcfInsertionPayloadElement) => {
     switch (forWhat) {
         case "unit":
             return Object.entries(activityUnitToLabel)
         case "scope":
             return Object.entries(ghgScopeToLabel)
+        default:
+            throw new Error("")
     }
 }
 
-type WithInputSelectStaticProps = {
-    forWhat: ForWhat
-}
-const InputSelectStatic = ({ forWhat, ...props }: PcfInputCoordinate & WithInputSelectStaticProps) => {
-    const entries = makeEntries(forWhat)
+const DropdownStatic = ({ columnKey, rowIndex }: PcfInputCoordinate) => {
+    const entries = makeEntries(columnKey)
 
     return (
         <DropdownMenu>
@@ -61,4 +54,4 @@ const InputSelectStatic = ({ forWhat, ...props }: PcfInputCoordinate & WithInput
     )
 }
 
-export default InputSelectStatic
+export default DropdownStatic
