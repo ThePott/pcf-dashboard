@@ -5,7 +5,7 @@ export type DivProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivEleme
 //     HTMLButtonElement
 // >
 //
-// export type InputProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+export type InputProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 //
 // export type PProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>
 //

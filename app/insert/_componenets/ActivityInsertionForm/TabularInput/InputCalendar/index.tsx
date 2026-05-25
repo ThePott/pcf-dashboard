@@ -17,7 +17,9 @@ const InputCalendar = ({ columnKey, rowIndex }: PcfInputCoordinate) => {
 
     return (
         <InputBase
+            value={dateCell.value}
             isError={false}
+            onBlur={(event) => updateRowArray(rowIndex, columnKey, event.target.value)}
             TrailingComponent={
                 <Popover>
                     <PopoverTrigger asChild>

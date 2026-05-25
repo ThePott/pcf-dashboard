@@ -1,4 +1,5 @@
 import Hstack from "@/app/shared/components/layouts/Hstack"
+import { InputProps } from "@/app/shared/types"
 import clsx from "clsx"
 import { JSX } from "react"
 import { tv } from "tailwind-variants/lite"
@@ -13,14 +14,17 @@ const inputBaseVariants = tv({
     },
 })
 
-type InputBaseProps = {
+type WithInputBaseProps = {
     isError: boolean
     TrailingComponent?: JSX.Element
 }
-const InputBase = ({ isError, TrailingComponent }: InputBaseProps) => {
+const InputBase = ({ isError, TrailingComponent, ...props }: InputProps & WithInputBaseProps) => {
     return (
         <Hstack className={clsx(inputBaseVariants({ isError }))}>
-            <input className="size-full min-w-0 border-0 outline-0 placeholder:text-iua-fg-muted disabled:text-iua-fg-dim disabled:placeholder:text-iua-fg-dim" />
+            <input
+                {...props}
+                className="size-full min-w-0 border-0 outline-0 placeholder:text-iua-fg-muted disabled:text-iua-fg-dim disabled:placeholder:text-iua-fg-dim"
+            />
             {TrailingComponent}
         </Hstack>
     )
