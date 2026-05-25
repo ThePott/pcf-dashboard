@@ -1,5 +1,5 @@
 "use client"
-import { PcfInsertionColumnKey, PcfInsertionRow } from "@/app/insert/_types"
+import { PcfInsertionCell, PcfInsertionColumnKey, PcfInsertionRow } from "@/app/insert/_types"
 import { ActivityInsertionPrerequisite } from "@/app/insert/page"
 import { Vstack } from "@/app/shared/components/layouts"
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
@@ -11,11 +11,31 @@ import InputDropdownStatic from "./InputDropdownStatic"
 
 const columnHelper = createColumnHelper<PcfInsertionRow>()
 
+export type UpdateDataFunction = (
+    rowIndex: number,
+    columnKey: PcfInsertionColumnKey,
+    value: string,
+    label: string
+) => void
+
+declare module "@tanstack/react-table" {
+    interface TableMeta<TData> {
+        updateData: UpdateDataFunction
+    }
+}
+
 const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
     const columns = [
         columnHelper.accessor("acted_at", {
             header: "일자(원본)",
-            cell: (info) => <InputCalendar columnKey="acted_at" rowIndex={info.row.index} />,
+            cell: (info) => (
+                <InputCalendar
+                    columnKey="acted_at"
+                    rowIndex={info.row.index}
+                    updateData={info.table.options.meta?.updateData}
+                    label={info.getValue().label}
+                />
+            ),
         }),
         columnHelper.display({
             id: "activity_category_id",
@@ -80,38 +100,44 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
 
 const rowArray = Array(100)
     .fill(null)
-    .map(() => ({}) as PcfInsertionRow)
-
-export type UpdateDataFunction = (
-    rowIndex: number,
-    columnKey: PcfInsertionColumnKey,
-    value: string,
-    label: string
-) => void
+    .map(
+        () =>
+            ({
+                acted_at: {} as PcfInsertionCell,
+                amount: {} as PcfInsertionCell,
+                unit: {} as PcfInsertionCell,
+                scope: {} as PcfInsertionCell,
+                activity_description_id: {} as PcfInsertionCell,
+                emission_factor_id: {} as PcfInsertionCell,
+                activity_category_id: {} as PcfInsertionCell,
+            }) as PcfInsertionRow
+    )
 
 const TabularInput = (props: ActivityInsertionPrerequisite) => {
     const [columns, _setColumns] = useState(() => createColumns(props))
     const [data, setData] = useState(rowArray)
 
+    console.log({ data })
+
     const updateData: UpdateDataFunction = (rowIndex, columnKey, value, label) => {
-        const rowArray = [...data]
-        const row = rowArray[rowIndex]
+        const newData = [...data]
+        const row = newData[rowIndex]
         const cell = row?.[columnKey]
-        if (!cell) return
 
         // NOTE: 빈 셀 클릭했으면 아무것도 안 함
+        if (!value && !cell) return
         if (!value && !cell.value) return
 
         cell.value = value
         cell.label = label
         cell.isError = false
 
-        setData(rowArray)
+        setData(newData)
     }
 
     const table = useReactTable({
         columns,
-        data: rowArray,
+        data,
         getCoreRowModel: getCoreRowModel(),
         meta: {
             updateData,

@@ -1,6 +1,5 @@
 import { activity_category } from "@/app/generated/prisma/client"
 import { activity_unit, ghg_scope } from "@/app/generated/prisma/enums"
-import useInsertStore from "@/app/insert/_store"
 import { PcfInputCoordinate, PcfInsertionColumnKey } from "@/app/insert/_types"
 import { Button } from "@/components/ui/button"
 import {
@@ -48,16 +47,16 @@ type WithInputDropdownStaticProps<T extends Base> = {
 }
 const InputDropdownStatic = <T extends Base>({
     queryResult,
+    updateData,
     ...props
 }: PcfInputCoordinate & WithInputDropdownStaticProps<T>) => {
     const { columnKey, rowIndex } = props
-    const updateRowArray = useInsertStore((state) => state.updateRowArray)
     const entries = makeEntries(columnKey, queryResult)
 
     const inputRef = useRef<HTMLInputElement>(null)
 
     const handleUpdate = (id: string, label: string) => {
-        updateRowArray(rowIndex, columnKey, id.toString(), label)
+        updateData?.(rowIndex, columnKey, id.toString(), label)
         if (!inputRef?.current) return
         inputRef.current.value = label
     }

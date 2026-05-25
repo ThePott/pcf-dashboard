@@ -1,4 +1,5 @@
 import { activity_record } from "@/app/generated/prisma/client"
+import { UpdateDataFunction } from "../_componenets/ActivityInsertionForm/TabularInput"
 
 export type PcfInsertionPayloadElement = Omit<
     activity_record,
@@ -18,3 +19,10 @@ export type PcfInputCoordinate = {
     columnKey: PcfInsertionColumnKey
     rowIndex: number
 }
+
+type Base = { id: bigint; label: string }
+type WithInputDropdownStaticProps<T extends Base> = {
+    queryResult?: T[]
+    updateData: UpdateDataFunction | undefined
+}
+export type PcfInputCellProps<T extends Base = Base> = PcfInputCoordinate & WithInputDropdownStaticProps<T>

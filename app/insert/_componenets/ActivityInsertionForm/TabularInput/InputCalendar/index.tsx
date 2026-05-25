@@ -1,7 +1,6 @@
 "use client"
 
-import useInsertStore from "@/app/insert/_store"
-import { PcfInputCoordinate } from "@/app/insert/_types"
+import { PcfInputCellProps } from "@/app/insert/_types"
 import { makeKstYmd } from "@/app/shared/utils/make-kst-ymd"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -10,18 +9,17 @@ import { Calendar as IconCalendar } from "lucide-react"
 import { useRef } from "react"
 import InputBase from "../InputBase"
 
-const InputCalendar = ({ columnKey, rowIndex }: PcfInputCoordinate) => {
+const InputCalendar = ({ columnKey, rowIndex, updateData, label }: PcfInputCellProps & { label: string }) => {
     const inputRef = useRef<HTMLInputElement>(null)
-    const rowArray = useInsertStore((state) => state.rowArray)
-    const updateRowArray = useInsertStore((state) => state.updateRowArray)
-    const dateCell = rowArray[rowIndex]?.[columnKey]
-    const date = dateCell ? new Date(dateCell.value) : undefined
 
     const handleSelect = (selected: Date | string | undefined) => {
+        console.log({ selected })
+        if (!updateData) return
         if (!selected) return
+
         if (typeof selected === "string") {
             // TODO: onBlur validate 해야
-            updateRowArray(rowIndex, columnKey, selected, selected)
+            updateData(rowIndex, columnKey, selected, selected)
             if (!inputRef?.current) return
             inputRef.current.value = selected
             return
@@ -29,7 +27,7 @@ const InputCalendar = ({ columnKey, rowIndex }: PcfInputCoordinate) => {
 
         // TODO: need to reduce repetition
         const ymd = makeKstYmd(selected)
-        updateRowArray(rowIndex, columnKey, ymd, ymd)
+        updateData(rowIndex, columnKey, ymd, ymd)
         if (!inputRef?.current) return
         inputRef.current.value = ymd
     }
@@ -47,7 +45,7 @@ const InputCalendar = ({ columnKey, rowIndex }: PcfInputCoordinate) => {
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-fit">
-                        <Calendar mode="single" selected={date} onSelect={handleSelect} />
+                        <Calendar mode="single" selected={new Date(label)} onSelect={handleSelect} />
                     </PopoverContent>
                 </Popover>
             }
