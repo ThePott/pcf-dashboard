@@ -1,4 +1,5 @@
 import prismaClient from "../shared/configs/prisma-client"
+import TestForm from "./_componenets/TestForm"
 
 export const dynamic = "force-dynamic"
 
@@ -9,6 +10,7 @@ const InsertPage = async () => {
     return (
         <div>
             <div>this is insert page</div>
+            <TestForm />
         </div>
     )
 }

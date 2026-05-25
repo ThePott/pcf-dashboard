@@ -4,85 +4,87 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+    provider = "prisma-client"
+    output   = "../app/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
 }
 
 // 운송, 원자재, 전기
 // 각 카테고리 내에서의 자동완성 목적
 model activity_category {
-  id                   BigInt                 @id @default(autoincrement())
-  category             String                 @map("name") @db.VarChar(255)
-  activityDescriptions activity_description[]
+    id                   BigInt                 @id @default(autoincrement())
+    category             String                 @map("name") @db.VarChar(255)
+    activityDescriptions activity_description[]
 }
 
 // 플라스틱1, 플라스틱2 등
 model activity_description {
-  id          BigInt @id @default(autoincrement())
-  description String @map("name") @db.VarChar(255)
+    id          BigInt @id @default(autoincrement())
+    description String @map("name") @db.VarChar(255)
 
-  activity_category_id BigInt
-  activity_category    activity_category @relation(fields: [activity_category_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  emissionFactors      emission_factor[]
-  activityRecords      activity_record[]
+    activity_category_id BigInt
+    activity_category    activity_category @relation(fields: [activity_category_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+    emissionFactors      emission_factor[]
+    activityRecords      activity_record[]
 }
 
 enum activity_unit {
-  kWh
-  kg
-  ton_km // NOTE: ton-km은 enum에서 하이픈 불가
+    kWh
+    kg
+    ton_km // NOTE: ton-km은 enum에서 하이픈 불가
 }
 
 model emission_factor {
-  id            BigInt        @id @default(autoincrement())
-  version       DateTime      @db.Timestamp(6) // NOTE: 고시 연월일
-  value         Float
-  activity_unit activity_unit // NOTE: 배출 계수 단위:  kgCO₂e / activity_unit
+    id            BigInt        @id @default(autoincrement())
+    version       DateTime      @db.Timestamp(6) // NOTE: 고시 연월일
+    value         Float
+    activity_unit activity_unit // NOTE: 배출 계수 단위:  kgCO₂e / activity_unit
 
-  company_id              BigInt? // NOTE: 확장 대비용 (회사 자체 계수일 경우 입력)
-  activity_description_id BigInt
-  activity_description    activity_description @relation(fields: [activity_description_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  activityRecords         activity_record[]
+    company_id              BigInt? // NOTE: 확장 대비용 (회사 자체 계수일 경우 입력)
+    activity_description_id BigInt
+    activity_description    activity_description @relation(fields: [activity_description_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+    activityRecords         activity_record[]
+
+    @@unique(fields: [id, activity_unit]) // NOTE: 배출계수 사용 시에는 단위를 정확히 맞춰야 함
 }
 
 enum ghg_scope {
-  SCOPE_1
-  SCOPE_2
-  SCOPE_3
+    SCOPE_1
+    SCOPE_2
+    SCOPE_3
 }
 
 enum record_status {
-  PROVISIONAL
-  FINALIZED
+    PROVISIONAL
+    FINALIZED
 }
 
 model product {
-  id              BigInt            @id @default(autoincrement())
-  name            String            @db.VarChar(255)
-  activityRecords activity_record[]
+    id              BigInt            @id @default(autoincrement())
+    name            String            @unique @db.VarChar(255) // NOTE: 여러 회사들을 등록할 땐 unique contraint를 [name, company_id]로 변경합니다
+    activityRecords activity_record[]
 
-  company_id BigInt? // NOTE: 확장 대비용
+    company_id BigInt? // NOTE: 확장 대비용
 }
 
 model activity_record {
-  id            BigInt        @id @default(autoincrement())
-  acted_at      DateTime      @db.Timestamp(6)
-  amount        Float
-  unit          activity_unit
-  scope         ghg_scope
-  record_status record_status
-  created_at    DateTime      @default(now())
-  updated_at    DateTime      @updatedAt
+    id            BigInt        @id @default(autoincrement())
+    acted_at      DateTime      @db.Timestamp(6)
+    amount        Float
+    unit          activity_unit
+    scope         ghg_scope
+    record_status record_status
+    created_at    DateTime      @default(now())
+    updated_at    DateTime      @updatedAt
 
-  company_id              BigInt? // NOTE: 확장 대비용
-  activity_description_id BigInt
-  activity_description    activity_description @relation(fields: [activity_description_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  product_id              BigInt
-  product                 product              @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  emission_factor_id      BigInt
-  emission_factor         emission_factor      @relation(fields: [emission_factor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+    company_id              BigInt? // NOTE: 확장 대비용
+    activity_description_id BigInt
+    activity_description    activity_description @relation(fields: [activity_description_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+    product_id              BigInt
+    product                 product              @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+    emission_factor_id      BigInt
+    emission_factor         emission_factor      @relation(fields: [emission_factor_id, unit], references: [id, activity_unit], onDelete: Cascade, onUpdate: NoAction)
 }
