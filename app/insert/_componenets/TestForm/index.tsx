@@ -7,8 +7,8 @@ const TestForm = () => {
         event.preventDefault()
 
         const recordResult = await testCreateActionRecord()
-
-        console.log({ recordResult })
+        const serializable = recordResult
+        console.log({ serializable })
     }
 
     return (
