@@ -28,7 +28,7 @@ const createColumns = (prerequisite: ActivityInsertionPrerequisite) => {
     const columns = [
         columnHelper.accessor("acted_at", {
             header: "일자(원본)",
-            cell: () => <InputCalendar />,
+            cell: (info) => <InputCalendar columnKey="acted_at" rowIndex={info.row.index} />,
         }),
         columnHelper.display({
             id: "activity_category_id",

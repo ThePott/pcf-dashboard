@@ -7,7 +7,7 @@ type InsertStoreState = {
     updateRowArray: (rowIndex: number, columnKey: keyof PcfInsertionPayloadElement, value: string) => void
 }
 
-const useInsertStore = create<InsertStoreState>()(() => ({
+const useInsertStore = create<InsertStoreState>()((set, get) => ({
     rowArray: Array(100)
         .fill(null)
         .map(
@@ -22,7 +22,18 @@ const useInsertStore = create<InsertStoreState>()(() => ({
                 }) as PcfInsertionRow
         ),
     updateRowArray: (rowIndex, columnKey, value) => {
-        console.log({ rowIndex, columnKey, value })
+        const rowArray = [...get().rowArray]
+        const row = rowArray[rowIndex]
+        const cell = row?.[columnKey]
+        if (!cell) return
+
+        // NOTE: 빈 셀 클릭했으면 아무것도 안 함
+        if (!value && !cell.value) return
+
+        cell.value = value
+        cell.isError = false
+
+        set({ rowArray })
     },
 }))
 

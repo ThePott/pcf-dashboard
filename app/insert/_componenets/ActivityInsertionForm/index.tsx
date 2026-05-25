@@ -10,7 +10,6 @@ const ActivityInsertionForm = (props: ActivityInsertionPrerequisite) => {
 
         const recordResult = await testCreateActionRecord()
         const serializable = recordResult
-        console.log({ serializable })
     }
 
     return (

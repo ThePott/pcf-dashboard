@@ -1,6 +1,5 @@
 import { activity_category, activity_description, emission_factor } from "../generated/prisma/browser"
 import prismaClient from "../shared/configs/prisma-client"
-import { makeSerializable } from "../shared/utils/make-serializable"
 import ActivityInsertionForm from "./_componenets/ActivityInsertionForm"
 
 export type ActivityInsertionPrerequisite = {
@@ -10,10 +9,6 @@ export type ActivityInsertionPrerequisite = {
 }
 
 const InsertPage = async () => {
-    const result = await prismaClient.emission_factor.findMany()
-    const serializable = makeSerializable(result)
-    console.log({ serializable })
-
     const emissionFactorPromise = prismaClient.emission_factor.findMany()
     const activityCategoryPromise = prismaClient.activity_category.findMany()
     const activityDescriptionPromise = prismaClient.activity_description.findMany()
