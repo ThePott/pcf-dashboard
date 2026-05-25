@@ -1,6 +1,14 @@
 "use client"
 import { activity_record } from "@/app/generated/prisma/client"
 import { Vstack } from "@/app/shared/components/layouts"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import clsx from "clsx"
 
@@ -36,7 +44,23 @@ const columns = [
     }),
     columnHelper.accessor("unit", {
         header: "단위",
-        cell: () => <input />,
+        cell: () => (
+            <Vstack>
+                <input />
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button>Open</button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuGroup>
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuItem>Profile</DropdownMenuItem>
+                            <DropdownMenuItem>Billing</DropdownMenuItem>
+                        </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </Vstack>
+        ),
     }),
 ]
 
